@@ -33,17 +33,22 @@ class ascii_application():
         root = tk.Tk()
         root.title("Asciify")
         root.geometry(
-            f'{settings.application["windowWidth"]}x{settings.application["windowHeight"]}')
+            f'{settings.application["width"]}x{settings.application["height"]}'
+        )
         return root
 
     def browse_image(self):
-        self.curfile = fd.askopenfilename(parent=self.root, initialdir=self.curdir, title="select a picture", filetypes=(
-            ("jpg", "*.jpg"), ("png", "*.png"), ("All files", "*.*")))
+        self.curfile = fd.askopenfilename(
+            parent=self.root,
+            initialdir=self.curdir,
+            title="select a picture",
+            filetypes=(("jpg", "*.jpg"),
+                       ("png", "*.png"),
+                       ("All files", "*.*")))
         self.update_ascii()
 
     def save_ascii_file(self):
         name = os.path.basename(self.curfile)[:-4]
-        print(name)
         filename = os.path.join(self.curdir, 'images/', f'{name}_ascii.txt')
         print('save', filename)
         with open(filename, 'w') as outputfile:
@@ -123,8 +128,10 @@ class ascii_application():
         # gradient
         gradientGroup = tk.LabelFrame(toolbar, text="gradient")
         tk.Label(gradientGroup, text="step").pack(side=tk.LEFT, padx=10)
-        tk.Spinbox(gradientGroup, width=2, from_=1, to=len(settings.gradient["characters"]),
-                   textvariable=self.gradientStep).pack(anchor=tk.W, side=tk.LEFT)
+        tk.Spinbox(gradientGroup, width=2, from_=1,
+                   to=len(settings.gradient["characters"]),
+                   textvariable=self.gradientStep).pack(
+                       anchor=tk.W, side=tk.LEFT)
         self.gradientStep.set(settings.gradient["step"])
         self.gradientStep.trace('w', self.on_gradient_step_changed)
         tk.Checkbutton(gradientGroup,
@@ -133,7 +140,8 @@ class ascii_application():
                        padx=5,
                        variable=self.use_custom_gradient,
                        justify=tk.RIGHT,
-                       command=self.on_toggle_custom_gradient).pack(anchor=tk.W, side=tk.LEFT)
+                       command=self.on_toggle_custom_gradient).pack(
+                           anchor=tk.W, side=tk.LEFT)
         validate = self.root.register(self.validate_custom_gradient)
         entry = tk.Entry(
             gradientGroup, textvariable=self.gradientEntry, validate="key",
