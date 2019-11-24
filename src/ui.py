@@ -3,7 +3,6 @@ import tkinter.filedialog as fd
 from tkinter import messagebox
 import os
 from src.asciify import convert_image_to_characters
-from PIL import Image, ImageTk
 import src.settings as settings
 import time
 import json

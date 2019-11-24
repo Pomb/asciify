@@ -12,7 +12,7 @@ application = {
 output = {
     "width": 256,
     "height": 128,
-    "sizePercent": 0.3
+    "sizePercent": 0.08
 }
 
 gradient = {

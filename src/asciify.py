@@ -22,8 +22,3 @@ def convert_image_to_characters(path, settings):
                 resized[x, y], settings.gradient["characters"])
         ascii_characters += '\n'
     return ascii_characters
-    # cv2.imshow('image', resized)
-    # cv2.waitKey(0)  # waits until a key is pressed
-    # cv2.destroyAllWindows()  # destroys the window showing image
-    # save_image(resized, os.path.basename(path)[:-4])
-    # save_text_ascii(ascii_image, os.path.basename(path)[:-4])
