@@ -10,10 +10,14 @@ def convert_image_to_characters(path, settings, callback):
     if not path:
         return ""
     img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
-    resized = cv2.resize(img, dsize=(
-                         int(img.shape[1] * settings.output["percent"]),
-                         int(img.shape[0] * settings.output["percent"])),
-                         interpolation=cv2.INTER_NEAREST)
+    dsize = img.shape
+    if "scale" in settings.output["type"]:
+        dsize = (int(img.shape[1] * settings.output["percent"]),
+                 int(img.shape[1] * settings.output["percent"]))
+    else:
+        dsize = (settings.output["width"], settings.output["height"])
+
+    resized = cv2.resize(img, dsize=dsize, interpolation=cv2.INTER_NEAREST)
 
     ascii_characters = ""
     for x in range(resized.shape[0]):

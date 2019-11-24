@@ -11,11 +11,13 @@ font = {
 }
 
 application = {
-    "width": 800,
+    "width": 1024,
     "height": 600
 }
 
 output = {
+    "options": [("scale", 1), ("targetres", 2)],
+    "type": "scale",
     "width": 256,
     "height": 128,
     "percent": 0.2
