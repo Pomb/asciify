@@ -159,10 +159,11 @@ class ascii_application():
         # output
         outputGroup = tk.LabelFrame(toolbar, text="output", width=200)
 
-        tk.Spinbox(outputGroup, text="%", width=5, from_=0.05, to=2.0,
+        tk.Label(outputGroup, text="%").pack(side=tk.LEFT, padx=2)
+        tk.Spinbox(outputGroup, width=4, from_=0.05, to=2.0,
                    format="%.2f", increment=0.01,
                    textvariable=self.percent).pack(
-                       anchor=tk.W, side=tk.LEFT, padx=20)
+                       anchor=tk.W, side=tk.LEFT, padx=5)
         self.percent.trace('w', self.on_percent_changed)
 
         tk.Label(outputGroup, textvariable=self.outputSize, width=10).pack(
