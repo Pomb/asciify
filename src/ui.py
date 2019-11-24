@@ -97,11 +97,12 @@ class ascii_application():
     def create_toolbar(self):
         toolbar = tk.Frame(self.root, bd=1, relief=tk.RAISED)
 
-        tk.Spinbox(toolbar, text="font size", width=4, from_=4, to=20,
-                   textvariable=self.fontsize).pack(side=tk.LEFT, padx=10)
+        tk.Label(toolbar, text="font size").pack(side=tk.LEFT, padx=10)
+        tk.Spinbox(toolbar, text="font size", width=2, from_=4, to=20,
+                   textvariable=self.fontsize).pack(side=tk.LEFT, padx=2)
         self.fontsize.trace('w', self.on_font_size_changed)
 
-        tk.Label(toolbar, text="step").pack(side=tk.LEFT)
+        tk.Label(toolbar, text="step").pack(side=tk.LEFT, padx=10)
         tk.Scale(toolbar,
                  from_=1,
                  to=len(settings.gradient["characters"]),
@@ -116,7 +117,7 @@ class ascii_application():
         tk.Checkbutton(toolbar,
                        text='use custom gradient',
                        width=20,
-                       padx=5,
+                       padx=10,
                        variable=self.use_custom_gradient,
                        justify=tk.RIGHT,
                        command=self.on_toggle_custom_gradient).pack(anchor=tk.W, side=tk.LEFT)
