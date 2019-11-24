@@ -1,7 +1,7 @@
 font = {
     "family": "Lucida Sans Typewriter",
     "options": ["Lucida Sans Typewriter", "Courier New"],
-    "fontSize": 5
+    "size": 5
 }
 
 application = {
