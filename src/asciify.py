@@ -6,7 +6,7 @@ def rgb_to_character(value, gradient):
     return gradient[int((value / 255) * (len(gradient) - 1))]
 
 
-def convert_image_to_characters(path, settings):
+def convert_image_to_characters(path, settings, callback):
     if not path:
         return ""
     img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
@@ -21,4 +21,6 @@ def convert_image_to_characters(path, settings):
             ascii_characters += rgb_to_character(
                 resized[x, y], settings.gradient["characters"])
         ascii_characters += '\n'
+
+    callback(resized)
     return ascii_characters

@@ -18,6 +18,7 @@ class ascii_application():
         self.use_custom_gradient = tk.BooleanVar(value=False)
         self.gradientStep = tk.StringVar()
         self.fontsize = tk.StringVar(value=str(settings.font["size"]))
+        self.outputSize = tk.StringVar(value="0x0")
 
         # application elements
         self.ascii_wdiget = self.create_ascii_zone()
@@ -29,6 +30,7 @@ class ascii_application():
 
     def _create_root_app(self):
         root = tk.Tk()
+        root.title("Asciify")
         root.geometry(
             f'{settings.application["windowWidth"]}x{settings.application["windowHeight"]}')
         return root
@@ -66,8 +68,12 @@ class ascii_application():
             print('error not enough characters to make asciified image')
             return
         self.ascii_image = convert_image_to_characters(
-            self.curfile, settings)
+            self.curfile, settings, self.on_ascii_image_updated)
         self.refresh_ascii_display()
+
+    def on_ascii_image_updated(self, resized_img):
+        print(resized_img.shape)
+        self.outputSize.set(f'{resized_img.shape[0]}x{resized_img.shape[1]}')
 
     def show_about(self):
         messagebox.showinfo("About", "documentation not yet downloaded")
@@ -95,15 +101,17 @@ class ascii_application():
         self.ascii_wdiget.configure(font=(settings.font["family"], val))
 
     def create_toolbar(self):
-        toolbar = tk.Frame(self.root, bd=1, relief=tk.RAISED)
+        toolbar = tk.Frame(self.root, bd=1, relief=tk.FLAT)
+        fontGroup = tk.LabelFrame(toolbar, text="settings")
 
-        tk.Label(toolbar, text="font size").pack(side=tk.LEFT, padx=10)
-        tk.Spinbox(toolbar, text="font size", width=2, from_=4, to=20,
-                   textvariable=self.fontsize).pack(side=tk.LEFT, padx=2)
+        tk.Label(fontGroup, text="font size").pack(side=tk.LEFT, padx=10)
+        tk.Spinbox(fontGroup, text="font size", width=2, from_=4, to=20,
+                   textvariable=self.fontsize).pack(side=tk.LEFT, padx=10)
         self.fontsize.trace('w', self.on_font_size_changed)
 
-        tk.Label(toolbar, text="step").pack(side=tk.LEFT, padx=10)
-        tk.Scale(toolbar,
+        gradientGroup = tk.LabelFrame(toolbar, text="gradient")
+        tk.Label(gradientGroup, text="step").pack(side=tk.LEFT, padx=10)
+        tk.Scale(gradientGroup,
                  from_=1,
                  to=len(settings.gradient["characters"]),
                  orient=tk.HORIZONTAL,
@@ -111,10 +119,10 @@ class ascii_application():
                  showvalue=0,
                  command=self.on_gradient_step_changed).pack(anchor=tk.W, side=tk.LEFT)
         self.gradientStep.set(settings.gradient["step"])
-        tk.Label(toolbar, width=5, textvariable=self.gradientStep).pack(
+        tk.Label(gradientGroup, width=5, textvariable=self.gradientStep).pack(
             side=tk.LEFT)
 
-        tk.Checkbutton(toolbar,
+        tk.Checkbutton(gradientGroup,
                        text='use custom gradient',
                        width=20,
                        padx=10,
@@ -124,15 +132,22 @@ class ascii_application():
 
         validate = self.root.register(self.validate_custom_gradient)
         entry = tk.Entry(
-            toolbar, textvariable=self.gradientEntry, validate="key",
+            gradientGroup, textvariable=self.gradientEntry, validate="key",
             validatecommand=(validate, "%P"))
         entry.pack(side=tk.LEFT, fill=tk.X, expand=1, padx=10)
 
         self.gradientEntry.set(settings.gradient["custom"])
         settings.gradient['characters'] = settings.gradient['default']
 
+        outputGroup = tk.LabelFrame(toolbar, text="output")
+
+        tk.Label(outputGroup, textvariable=self.outputSize, width=10).pack(
+            side=tk.LEFT, padx=10)
         # tk.Button(toolbar, text="update",  width=15,
         #           command=self.update_ascii).pack(side=tk.RIGHT, padx=10)
+        fontGroup.pack(side=tk.LEFT, fill=tk.X, padx=10, pady=5)
+        gradientGroup.pack(side=tk.LEFT, fill=tk.X, expand=1, padx=10)
+        outputGroup.pack(side=tk.RIGHT, fill=tk.X, padx=10)
         toolbar.pack(side=tk.TOP, fill=tk.X)
         return toolbar
 
