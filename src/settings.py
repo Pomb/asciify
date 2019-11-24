@@ -1,6 +1,6 @@
 font = {
     "family": "Lucida Sans Typewriter",
-    "options": ["Lucida Sans Typewriter", "Courier New"],
+    "options": ["Lucida Sans Typewriter", "Courier New", "Consolas", "Courier", "Lucida Console", "Monaco", "MS Gothic"],
     "size": 5
 }
 

@@ -16,8 +16,9 @@ class ascii_application():
         self.ascii_image = ""
         self.gradientEntry = tk.StringVar()
         self.use_custom_gradient = tk.BooleanVar(value=False)
-        self.gradientStep = tk.StringVar()
+        self.gradientStep = tk.StringVar(value=str(settings.gradient["step"]))
         self.fontsize = tk.StringVar(value=str(settings.font["size"]))
+        self.curfont = tk.StringVar(value=settings.font["family"])
         self.outputSize = tk.StringVar(value="0x0")
 
         # application elements
@@ -55,7 +56,7 @@ class ascii_application():
     def create_ascii_zone(self):
         # ascii text zone
         text1 = tk.Text(self.root, font=(
-            settings.font["family"], self.fontsize.get()))
+            self.curfont.get(), self.fontsize.get()))
         text1.pack(expand=1, fill='both', padx=10, pady=10, side=tk.BOTTOM)
         return text1
 
@@ -85,9 +86,8 @@ class ascii_application():
             settings.gradient["characters"] = settings.gradient["default"]
         self.update_ascii()
 
-    def on_gradient_step_changed(self, value):
-        self.gradientStep.set(value)
-        settings.gradient["step"] = value
+    def on_gradient_step_changed(self, a, b, c):
+        settings.gradient["step"] = int(self.gradientStep.get())
         self.update_ascii()
 
     def validate_custom_gradient(self, value):
@@ -98,54 +98,57 @@ class ascii_application():
     def on_font_size_changed(self, a, b, c):
         val = self.fontsize.get()
         settings.font["size"] = int(val)
-        self.ascii_wdiget.configure(font=(settings.font["family"], val))
+        self.ascii_wdiget.configure(font=(self.curfont.get(), val))
+
+    def on_font_changed(self, a, b, c):
+        settings.font["family"] = self.curfont.get()
+        print(settings.font["family"])
+        self.ascii_wdiget.configure(
+            font=(self.curfont.get(), self.fontsize.get()))
+        self.refresh_ascii_display()
 
     def create_toolbar(self):
         toolbar = tk.Frame(self.root, bd=1, relief=tk.FLAT)
-        fontGroup = tk.LabelFrame(toolbar, text="settings")
 
-        tk.Label(fontGroup, text="font size").pack(side=tk.LEFT, padx=10)
+        # font
+        fontGroup = tk.LabelFrame(toolbar, text="font")
+        tk.Label(fontGroup, text="size").pack(side=tk.LEFT, padx=5)
         tk.Spinbox(fontGroup, text="font size", width=2, from_=4, to=20,
-                   textvariable=self.fontsize).pack(side=tk.LEFT, padx=10)
+                   textvariable=self.fontsize).pack(side=tk.LEFT, padx=5, )
+        fontChoices = [x for x in settings.font["options"]]
+        tk.OptionMenu(fontGroup, self.curfont,
+                      *fontChoices).pack(side=tk.BOTTOM, padx=5, fill=tk.X)
+        self.curfont.trace('w', self.on_font_changed)
         self.fontsize.trace('w', self.on_font_size_changed)
-
+        # gradient
         gradientGroup = tk.LabelFrame(toolbar, text="gradient")
         tk.Label(gradientGroup, text="step").pack(side=tk.LEFT, padx=10)
-        tk.Scale(gradientGroup,
-                 from_=1,
-                 to=len(settings.gradient["characters"]),
-                 orient=tk.HORIZONTAL,
-                 width=5,
-                 showvalue=0,
-                 command=self.on_gradient_step_changed).pack(anchor=tk.W, side=tk.LEFT)
+        tk.Spinbox(gradientGroup, width=2, from_=1, to=len(settings.gradient["characters"]),
+                   textvariable=self.gradientStep).pack(anchor=tk.W, side=tk.LEFT)
         self.gradientStep.set(settings.gradient["step"])
-        tk.Label(gradientGroup, width=5, textvariable=self.gradientStep).pack(
-            side=tk.LEFT)
-
+        self.gradientStep.trace('w', self.on_gradient_step_changed)
         tk.Checkbutton(gradientGroup,
-                       text='use custom gradient',
-                       width=20,
-                       padx=10,
+                       text='use custom',
+                       width=10,
+                       padx=5,
                        variable=self.use_custom_gradient,
                        justify=tk.RIGHT,
                        command=self.on_toggle_custom_gradient).pack(anchor=tk.W, side=tk.LEFT)
-
         validate = self.root.register(self.validate_custom_gradient)
         entry = tk.Entry(
             gradientGroup, textvariable=self.gradientEntry, validate="key",
             validatecommand=(validate, "%P"))
         entry.pack(side=tk.LEFT, fill=tk.X, expand=1, padx=10)
-
         self.gradientEntry.set(settings.gradient["custom"])
         settings.gradient['characters'] = settings.gradient['default']
 
+        # output
         outputGroup = tk.LabelFrame(toolbar, text="output")
-
         tk.Label(outputGroup, textvariable=self.outputSize, width=10).pack(
             side=tk.LEFT, padx=10)
-        # tk.Button(toolbar, text="update",  width=15,
-        #           command=self.update_ascii).pack(side=tk.RIGHT, padx=10)
-        fontGroup.pack(side=tk.LEFT, fill=tk.X, padx=10, pady=5)
+
+        # gorup pack
+        fontGroup.pack(side=tk.LEFT, fill=tk.X, padx=10)
         gradientGroup.pack(side=tk.LEFT, fill=tk.X, expand=1, padx=10)
         outputGroup.pack(side=tk.RIGHT, fill=tk.X, padx=10)
         toolbar.pack(side=tk.TOP, fill=tk.X)
