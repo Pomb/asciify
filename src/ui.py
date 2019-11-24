@@ -17,6 +17,7 @@ class ascii_application():
         self.gradientEntry = tk.StringVar()
         self.use_custom_gradient = tk.BooleanVar(value=False)
         self.gradientStep = tk.StringVar()
+        self.fontsize = tk.StringVar(value=str(settings.font["size"]))
 
         # application elements
         self.ascii_wdiget = self.create_ascii_zone()
@@ -52,7 +53,7 @@ class ascii_application():
     def create_ascii_zone(self):
         # ascii text zone
         text1 = tk.Text(self.root, font=(
-            settings.font["family"], settings.font["fontSize"]))
+            settings.font["family"], self.fontsize.get()))
         text1.pack(expand=1, fill='both', padx=10, pady=10, side=tk.BOTTOM)
         return text1
 
@@ -88,8 +89,17 @@ class ascii_application():
         self.update_ascii()
         return True
 
+    def on_font_size_changed(self, a, b, c):
+        val = self.fontsize.get()
+        settings.font["size"] = int(val)
+        self.ascii_wdiget.configure(font=(settings.font["family"], val))
+
     def create_toolbar(self):
         toolbar = tk.Frame(self.root, bd=1, relief=tk.RAISED)
+
+        tk.Spinbox(toolbar, text="font size", width=4, from_=4, to=20,
+                   textvariable=self.fontsize).pack(side=tk.LEFT, padx=10)
+        self.fontsize.trace('w', self.on_font_size_changed)
 
         tk.Label(toolbar, text="step").pack(side=tk.LEFT)
         tk.Scale(toolbar,
@@ -115,13 +125,13 @@ class ascii_application():
         entry = tk.Entry(
             toolbar, textvariable=self.gradientEntry, validate="key",
             validatecommand=(validate, "%P"))
-        entry.pack(side=tk.LEFT, fill=tk.X, expand=1)
+        entry.pack(side=tk.LEFT, fill=tk.X, expand=1, padx=10)
 
         self.gradientEntry.set(settings.gradient["custom"])
         settings.gradient['characters'] = settings.gradient['default']
 
-        tk.Button(toolbar, text="update",  width=15,
-                  command=self.update_ascii).pack(side=tk.RIGHT, padx=10)
+        # tk.Button(toolbar, text="update",  width=15,
+        #           command=self.update_ascii).pack(side=tk.RIGHT, padx=10)
         toolbar.pack(side=tk.TOP, fill=tk.X)
         return toolbar
 
@@ -135,7 +145,7 @@ class MenuBar():
 
         fileMenu.add_separator()
         fileMenu.add_command(label="Quit", command=app.root.quit)
-        menubar.add_cascade(label="file", menu=fileMenu)
+        menubar.add_cascade(label="File", menu=fileMenu)
 
         helpmenu = tk.Menu(menubar, tearoff=0)
         helpmenu.add_command(label="About", command=app.show_about)
