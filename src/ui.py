@@ -19,6 +19,7 @@ class ascii_application():
         self.gradientStep = tk.StringVar(value=str(settings.gradient["step"]))
         self.fontsize = tk.StringVar(value=str(settings.font["size"]))
         self.curfont = tk.StringVar(value=settings.font["family"])
+        self.percent = tk.StringVar(value=float(settings.output["percent"]))
         self.outputSize = tk.StringVar(value="0x0")
 
         # application elements
@@ -112,6 +113,11 @@ class ascii_application():
             font=(self.curfont.get(), self.fontsize.get()))
         self.refresh_ascii_display()
 
+    def on_percent_changed(self, a, b, c):
+        settings.output["percent"] = float(self.percent.get())
+        print(settings.output["percent"])
+        self.update_ascii()
+
     def create_toolbar(self):
         toolbar = tk.Frame(self.root, bd=1, relief=tk.FLAT)
 
@@ -151,7 +157,14 @@ class ascii_application():
         settings.gradient['characters'] = settings.gradient['default']
 
         # output
-        outputGroup = tk.LabelFrame(toolbar, text="output")
+        outputGroup = tk.LabelFrame(toolbar, text="output", width=200)
+
+        tk.Spinbox(outputGroup, text="%", width=5, from_=0.05, to=2.0,
+                   format="%.2f", increment=0.01,
+                   textvariable=self.percent).pack(
+                       anchor=tk.W, side=tk.LEFT, padx=20)
+        self.percent.trace('w', self.on_percent_changed)
+
         tk.Label(outputGroup, textvariable=self.outputSize, width=10).pack(
             side=tk.LEFT, padx=10)
 

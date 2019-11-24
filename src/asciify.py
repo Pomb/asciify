@@ -11,8 +11,8 @@ def convert_image_to_characters(path, settings, callback):
         return ""
     img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
     resized = cv2.resize(img, dsize=(
-                         int(img.shape[1] * settings.output["sizePercent"]),
-                         int(img.shape[0] * settings.output["sizePercent"])),
+                         int(img.shape[1] * settings.output["percent"]),
+                         int(img.shape[0] * settings.output["percent"])),
                          interpolation=cv2.INTER_NEAREST)
 
     ascii_characters = ""
