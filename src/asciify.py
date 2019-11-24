@@ -10,6 +10,9 @@ def convert_image_to_characters(path, settings, callback):
     if not path:
         return ""
     img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
+    img = cv2.convertScaleAbs(
+        img, alpha=settings.adjustments["contrast"],
+        beta=settings.adjustments["brightness"])
     dsize = img.shape
     if "scale" in settings.output["type"]:
         dsize = (int(img.shape[1] * settings.output["percent"]),

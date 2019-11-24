@@ -24,6 +24,9 @@ class ascii_application():
         self.targetWidth = tk.StringVar(value=settings.output["width"])
         self.targetHeight = tk.StringVar(value=settings.output["height"])
         self.curoutputoption = tk.StringVar(value=settings.output["type"])
+        self.contrast = tk.StringVar(value=settings.adjustments["contrast"])
+        self.brightness = tk.StringVar(
+            value=settings.adjustments["brightness"])
 
         # application elements
         self.ascii_wdiget = self.create_ascii_zone()
@@ -131,11 +134,18 @@ class ascii_application():
         settings.gradient["characters"] = gradient
         self.update_ascii()
 
+    def on_adjustments_changed(self, a, b, c):
+        settings.adjustments["contrast"] = float(self.contrast.get())
+        settings.adjustments["brightness"] = float(self.brightness.get())
+        self.update_ascii()
+
     def create_toolbar(self):
-        toolbar = tk.Frame(self.root, bd=1, relief=tk.FLAT)
+        toolbarRow1 = tk.Frame(self.root, bd=1, relief=tk.FLAT)
+        toolbarRow2 = tk.Frame(self.root, bd=1, relief=tk.FLAT)
 
         # font
-        fontGroup = tk.LabelFrame(toolbar, text="font", width=900, height=20)
+        fontGroup = tk.LabelFrame(
+            toolbarRow1, text="font", width=900, height=20)
         tk.Label(fontGroup, text="size").pack(side=tk.LEFT, padx=5)
         tk.Spinbox(fontGroup, text="font size", width=2, from_=4, to=20,
                    textvariable=self.fontsize).pack(side=tk.LEFT, padx=5, )
@@ -145,7 +155,7 @@ class ascii_application():
         self.curfont.trace('w', self.on_font_changed)
         self.fontsize.trace('w', self.on_font_size_changed)
         # gradient
-        gradientGroup = tk.LabelFrame(toolbar, text="gradient")
+        gradientGroup = tk.LabelFrame(toolbarRow2, text="gradient")
         tk.Label(gradientGroup, text="step").pack(side=tk.LEFT, padx=10)
         tk.Spinbox(gradientGroup, width=2, from_=1,
                    to=len(settings.gradient["characters"]),
@@ -155,7 +165,7 @@ class ascii_application():
         self.gradientStep.trace('w', self.on_gradient_step_changed)
         tk.Checkbutton(gradientGroup,
                        text='use custom',
-                       width=10,
+                       width=8,
                        padx=5,
                        variable=self.use_custom_gradient,
                        justify=tk.RIGHT,
@@ -170,18 +180,18 @@ class ascii_application():
         settings.gradient['characters'] = settings.gradient['default']
         tk.Button(gradientGroup,
                   text="invert",
-                  width=10,
+                  width=8,
                   padx=10,
                   command=self.on_invert_gradient,
                   ).pack(side=tk.LEFT, anchor=tk.W)
 
         # output
-        outputGroup = tk.LabelFrame(toolbar, text="output", width=200)
+        outputGroup = tk.LabelFrame(toolbarRow1, text="output", width=200)
         for val, option in settings.output["options"]:
             tk.Radiobutton(outputGroup,
                            text=val,
                            indicatoron=0,
-                           width=10,
+                           width=4,
                            padx=10,
                            variable=self.curoutputoption,
                            value=val,
@@ -202,12 +212,28 @@ class ascii_application():
         self.targetWidth.trace('w', self.on_output_changed)
         self.targetHeight.trace('w', self.on_output_changed)
 
+        # adjustments
+        adjustmentsGroup = tk.LabelFrame(
+            toolbarRow2, text="adjustments", width=900, height=20)
+        tk.Label(adjustmentsGroup, text="contrast").pack(side=tk.LEFT, padx=5)
+        tk.Scale(adjustmentsGroup, from_=0.8, to=5.0, variable=self.contrast,
+                 orient=tk.HORIZONTAL, width=12, resolution=0.1, showvalue=0).pack(side=tk.LEFT, padx=5)
+        self.contrast.trace('w', self.on_adjustments_changed)
+        tk.Label(adjustmentsGroup, text="brightness").pack(
+            side=tk.LEFT, padx=5)
+        tk.Scale(adjustmentsGroup, from_=-255.0, to=255.0, variable=self.brightness,
+                 orient=tk.HORIZONTAL, width=12, resolution=0.1, showvalue=0).pack(side=tk.LEFT, padx=5)
+        self.contrast.trace('w', self.on_adjustments_changed)
+        self.brightness.trace('w', self.on_adjustments_changed)
+
         # group pack
-        gradientGroup.pack(side=tk.BOTTOM, fill=tk.X, expand=1, padx=10)
         fontGroup.pack(side=tk.LEFT, padx=10)
         outputGroup.pack(side=tk.LEFT, fill=tk.X, padx=10, expand=1)
-        toolbar.pack(side=tk.TOP, fill=tk.X)
-        return toolbar
+        gradientGroup.pack(side=tk.LEFT, fill=tk.X, expand=1, padx=10)
+        adjustmentsGroup.pack(side=tk.LEFT, fill=tk.X, padx=10)
+        toolbarRow1.pack(side=tk.TOP, fill=tk.X)
+        toolbarRow2.pack(side=tk.TOP, fill=tk.X)
+        return toolbarRow1
 
 
 class MenuBar():

@@ -15,11 +15,16 @@ application = {
     "height": 600
 }
 
+adjustments = {
+    "contrast": 1.5,
+    "brightness": 0
+}
+
 output = {
     "options": [("scale", 1), ("targetres", 2)],
     "type": "scale",
-    "width": 256,
-    "height": 128,
+    "width": 80,
+    "height": 60,
     "percent": 0.2
 }
 
