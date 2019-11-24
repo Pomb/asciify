@@ -118,6 +118,9 @@ class ascii_application():
             validatecommand=(validate, "%P"))
         entry.pack(side=tk.LEFT, fill=tk.X, expand=1)
 
+        self.gradientEntry.set(settings.gradient["custom"])
+        settings.gradient['characters'] = settings.gradient['default']
+
         tk.Button(toolbar, text="update",  width=15,
                   command=self.update_ascii).pack(side=tk.RIGHT, padx=10)
         toolbar.pack(side=tk.TOP, fill=tk.X)
