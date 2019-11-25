@@ -8,6 +8,7 @@ import time
 import json
 from src.menubar import MenuBar
 from src.toolbar import Toolbar
+from src.aboutdialog import AboutDialog
 
 
 class Application():
@@ -88,7 +89,8 @@ class Application():
         self.outputSize.set(f'{resized_img.shape[0]}x{resized_img.shape[1]}')
 
     def show_about(self):
-        messagebox.showinfo("About", "documentation not yet downloaded")
+        d = AboutDialog(self.root)
+        self.root.wait_window(d.top)
 
     def on_toggle_custom_gradient(self):
         if self.use_custom_gradient.get():
