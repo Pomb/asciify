@@ -12,10 +12,9 @@ class AboutDialog():
         self.top.title("About")
         self.top.bind("<Escape>", lambda e: self.top.destroy)
 
-        tk.Label(self.top, text="ASCIIFY", justify=tk.CENTER, font=("Lucida Sans Typewriter", 26)).pack(
+        tk.Label(self.top, text="ASCIIFY",
+                 justify=tk.CENTER, font=("Lucida Sans Typewriter", 26)).pack(
             side=tk.TOP, padx=20, pady=10)
-        #self.logo = tk.PhotoImage(file="images/asciify-icon.gif")
-        #tk.Label(self.top, image=self.logo, padx=10, pady=10).pack(side=tk.TOP)
         self.text = tk.Text(self.top, height=2, bg="#f0f0f0", relief=tk.FLAT)
         self.text.tag_configure("center", justify='center')
 
