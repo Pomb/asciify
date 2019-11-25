@@ -1,5 +1,6 @@
 import os
 import cv2
+import numpy as np
 
 
 def rgb_to_character(value, gradient):
@@ -13,6 +14,10 @@ def convert_image_to_characters(path, settings, callback):
     img = cv2.convertScaleAbs(
         img, alpha=settings.adjustments["contrast"],
         beta=settings.adjustments["brightness"])
+    img = cv2.bilateralFilter(img, 9, 75, 75)
+    kernel = np.array([[-1, -1, -1], [-1, 9, -1], [-1, -1, -1]])
+    img = cv2.filter2D(img, -1, kernel)
+
     dsize = img.shape
     if "scale" in settings.output["type"]:
         dsize = (int(img.shape[1] * settings.output["percent"]),
@@ -20,7 +25,7 @@ def convert_image_to_characters(path, settings, callback):
     else:
         dsize = (settings.output["width"], settings.output["height"])
 
-    resized = cv2.resize(img, dsize=dsize, interpolation=cv2.INTER_NEAREST)
+    resized = cv2.resize(img, dsize=dsize, interpolation=cv2.INTER_AREA)
 
     ascii_characters = ""
     for x in range(resized.shape[0]):
