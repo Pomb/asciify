@@ -66,7 +66,6 @@ class ascii_application():
         self.ascii_wdiget.insert(tk.END, self.ascii_image)
 
     def create_ascii_zone(self):
-        # ascii text zone
         text1 = tk.Text(self.root, font=(
             self.curfont.get(), self.fontsize.get()))
         text1.pack(expand=1, fill='both', padx=10, pady=10, side=tk.BOTTOM)
@@ -151,9 +150,11 @@ class ascii_application():
                    textvariable=self.fontsize).pack(side=tk.LEFT, padx=5, )
         fontChoices = [x for x in settings.font["options"]]
         tk.OptionMenu(fontGroup, self.curfont,
-                      *fontChoices).pack(side=tk.BOTTOM, padx=5, fill=tk.X, anchor=tk.CENTER)
+                      *fontChoices).pack(side=tk.BOTTOM, padx=5,
+                                         fill=tk.X, anchor=tk.CENTER)
         self.curfont.trace('w', self.on_font_changed)
         self.fontsize.trace('w', self.on_font_size_changed)
+
         # gradient
         gradientGroup = tk.LabelFrame(toolbarRow2, text="gradient")
         tk.Label(gradientGroup, text="step").pack(side=tk.LEFT, padx=10)
@@ -187,7 +188,7 @@ class ascii_application():
 
         # output
         outputGroup = tk.LabelFrame(toolbarRow1, text="output", width=200)
-        for val, option in settings.output["options"]:
+        for val in settings.output["options"]:
             tk.Radiobutton(outputGroup,
                            text=val,
                            indicatoron=0,
@@ -217,12 +218,15 @@ class ascii_application():
             toolbarRow2, text="adjustments", width=900, height=20)
         tk.Label(adjustmentsGroup, text="contrast").pack(side=tk.LEFT, padx=5)
         tk.Scale(adjustmentsGroup, from_=0.8, to=5.0, variable=self.contrast,
-                 orient=tk.HORIZONTAL, width=12, resolution=0.1, showvalue=0).pack(side=tk.LEFT, padx=5)
+                 orient=tk.HORIZONTAL, width=12, resolution=0.1,
+                 showvalue=0).pack(side=tk.LEFT, padx=5)
         self.contrast.trace('w', self.on_adjustments_changed)
         tk.Label(adjustmentsGroup, text="brightness").pack(
             side=tk.LEFT, padx=5)
-        tk.Scale(adjustmentsGroup, from_=-255.0, to=255.0, variable=self.brightness,
-                 orient=tk.HORIZONTAL, width=12, resolution=0.1, showvalue=0).pack(side=tk.LEFT, padx=5)
+        tk.Scale(adjustmentsGroup, from_=-255.0, to=255.0,
+                 variable=self.brightness,
+                 orient=tk.HORIZONTAL, width=12, resolution=0.1,
+                 showvalue=0).pack(side=tk.LEFT, padx=5)
         self.contrast.trace('w', self.on_adjustments_changed)
         self.brightness.trace('w', self.on_adjustments_changed)
 
