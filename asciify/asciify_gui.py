@@ -41,6 +41,7 @@ class AsciifyGUI():
 
     def run(self):
         self.root.mainloop()
+        self.root.update()
 
     def _create_root_app(self):
         root = tk.Tk()
