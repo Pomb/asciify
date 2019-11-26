@@ -29,7 +29,7 @@ output = {
 }
 
 gradient = {
-    "custom": "-oX",
+    "custom": "@#X0-,. ",
     "default":
         "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/|()1{}[]?-_+~<>i!lI;:,^`'.",
     "characters":
