@@ -1,5 +1,6 @@
 # Asciify
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT) ![](https://github.com/Pomb/asciify/workflows/Python%20application/badge.svg)
+
 
 ## Description
 A simple gui program that facilitates generating ascii art from provided images.
