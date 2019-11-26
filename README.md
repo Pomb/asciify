@@ -1,6 +1,6 @@
 # Asciify
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
-![](https://github.com/Pomb/asciify/workflows/Python%20application/badge.svg)
+![](https://github.com/Pomb/asciify/workflows/Build/badge.svg)
 
 
 ## Description
