@@ -1,28 +1,35 @@
 import os
 import cv2
 import numpy as np
+import math
+from sizing import getWidth, getHeight
 
 
 def rgb_to_character(value, gradient):
     return gradient[int((value / 255) * (len(gradient) - 1))]
 
 
-def resize(path, settings):
-    if not path:
+def grey(path, settings):
+    if not os.path.isfile:
+        print("provided path isn't an image")
         return None
-    dsize = (settings.output["width"], settings.output["height"])
-    if dsize[0] <= 0 or dsize[1] <= 0:
-        return ""
+    return cv2.imread(path, cv2.IMREAD_GRAYSCALE)
 
-    # black and white
-    img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
 
-    if "scale" in settings.output["type"]:
-        dsize = (int(img.shape[1] * settings.output["percent"]),
-                 int(img.shape[1] * settings.output["percent"]))
+def resize(img, settings):
+    try:
+        dsize = (settings.output["width"], settings.output["height"])
+        if dsize[0] <= 0 or dsize[1] <= 0:
+            return ""
 
-    resized = cv2.resize(img, dsize=dsize, interpolation=cv2.INTER_AREA)
-    return resized
+        height = int(settings.output["height"])
+        width = int(settings.output["width"])
+        dsize = (width, height)
+
+        resized = cv2.resize(img, dsize=dsize, interpolation=cv2.INTER_AREA)
+        return resized
+    except ValueError:
+        print("img is not the right format")
 
 
 def convert_image_to_characters(img, settings):

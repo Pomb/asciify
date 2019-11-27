@@ -24,11 +24,11 @@ class Toolbar(tk.Frame):
 
         # gradient
         gradientGroup = tk.LabelFrame(toolbarRow2, text="gradient")
-        tk.Label(gradientGroup, text="step").pack(side=tk.LEFT, padx=10)
-        tk.Spinbox(gradientGroup, width=2, from_=1,
-                   to=len(settings.gradient["characters"]),
-                   textvariable=app.gradientStep).pack(
-                       anchor=tk.W, side=tk.LEFT)
+        # tk.Label(gradientGroup, text="step").pack(side=tk.LEFT, padx=10)
+        # tk.Spinbox(gradientGroup, width=2, from_=1,
+        #            to=len(settings.gradient["characters"]),
+        #            textvariable=app.gradientStep).pack(
+        #                anchor=tk.W, side=tk.LEFT)
         app.gradientStep.set(settings.gradient["step"])
         app.gradientStep.trace('w', app.on_gradient_step_changed)
         tk.Checkbutton(gradientGroup,
@@ -55,27 +55,20 @@ class Toolbar(tk.Frame):
 
         # output
         outputGroup = tk.LabelFrame(toolbarRow1, text="output", width=200)
-        for val in settings.output["options"]:
-            tk.Radiobutton(outputGroup,
-                           text=val[0:-1],
-                           indicatoron=0,
-                           width=4,
-                           padx=10,
-                           variable=app.curoutputoption,
-                           value=val,
-                           ).pack(side=tk.LEFT, anchor=tk.W)
-        tk.Label(outputGroup, text="%").pack(side=tk.LEFT, padx=10)
-        tk.Spinbox(outputGroup, width=4, from_=0.01, to=2.0,
-                   format="%.2f", increment=0.01,
-                   textvariable=app.percent).pack(
-                       anchor=tk.W, side=tk.LEFT, padx=5)
-        tk.Label(outputGroup, text="width").pack(side=tk.LEFT, padx=2)
-        tk.Entry(outputGroup, textvariable=app.targetWidth,
-                 width=10).pack(side=tk.LEFT, padx=5)
-        tk.Label(outputGroup, text="height").pack(side=tk.LEFT, padx=2)
-        tk.Entry(outputGroup, textvariable=app.targetHeight,
-                 width=10).pack(side=tk.LEFT, padx=5)
+        tk.Label(outputGroup, text="size").pack(side=tk.LEFT, padx=2)
+        tk.Scale(outputGroup, from_=1, to=512, variable=app.targetWidth,
+                 orient=tk.HORIZONTAL, width=12, resolution=1,
+                 showvalue=0).pack(side=tk.LEFT, fill=tk.X, expand=1, padx=5)
+        tk.Scale(outputGroup, from_=1, to=128, variable=app.targetHeight,
+                 orient=tk.HORIZONTAL, width=12, resolution=1,
+                 showvalue=0).pack(side=tk.LEFT, fill=tk.X, expand=1, padx=5)
+        tk.Label(outputGroup, text=app.targetWidth,
+                 textvariable=app.targetWidth).pack(side=tk.LEFT, padx=2)
+        tk.Label(outputGroup, text="x").pack(side=tk.LEFT, padx=2)
+        tk.Label(outputGroup, text=app.targetHeight,
+                 textvariable=app.targetHeight).pack(side=tk.LEFT, padx=2)
 
+        app.curoutputoption.set("targetres")
         app.curoutputoption.trace('w', app.on_outputsize_changed)
         app.percent.trace('w', app.on_outputsize_changed)
         app.targetWidth.trace('w', app.on_outputsize_changed)

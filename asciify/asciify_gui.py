@@ -4,20 +4,21 @@ from tkinter import messagebox
 import cv2
 import os
 from img_to_char import convert_image_to_characters
-from img_to_char import resize
+from img_to_char import resize, grey
 import settings as settings
 import time
 import json
 from menubar import MenuBar
 from toolbar import Toolbar
 from about_dialog import AboutDialog
+from sizing import calculateAspectRatioFit, getHeight, getWidth
 
 
 class AsciifyGUI():
     def __init__(self):
         self.root = self._create_root_app()
         self.curdir = os.getcwd()
-        self.curfile = ""
+        self.curfile = f'{os.path.dirname(self.curdir)}\\images\\asciify.jpg'
         self.curimg = None
         self.ascii_image = ""
         self.gradientEntry = tk.StringVar()
@@ -27,17 +28,21 @@ class AsciifyGUI():
         self.curfont = tk.StringVar(value=settings.font["family"])
         self.percent = tk.StringVar(value=float(settings.output["percent"]))
         self.outputSize = tk.StringVar(value="0x0")
-        self.targetWidth = tk.StringVar(value=settings.output["width"])
-        self.targetHeight = tk.StringVar(value=settings.output["height"])
+        self.targetWidth = tk.IntVar(value=int(settings.output["width"]))
+        self.targetHeight = tk.IntVar(value=int(settings.output["height"]))
         self.curoutputoption = tk.StringVar(value=settings.output["type"])
         self.contrast = tk.StringVar(value=settings.adjustments["contrast"])
         self.brightness = tk.StringVar(
             value=settings.adjustments["brightness"])
+        self.aspectRatioFit = (16, 9)
 
         # application elements
-        self.ascii_wdiget = self.create_ascii_zone()
         self.menubar = MenuBar(self)
         self.toolbar_widget = Toolbar(self)
+        self.ascii_wdiget = self.create_ascii_zone()
+
+        self.update_current_working_img()
+        self.update_ascii()
 
     def run(self):
         self.root.mainloop()
@@ -76,14 +81,19 @@ class AsciifyGUI():
                 outputfile.writelines(self.ascii_image)
 
     def refresh_ascii_display(self):
+        if self.curimg.any():
+            self.ascii_wdiget.configure(
+                width=self.curimg.shape[1], height=self.curimg.shape[0])
         self.ascii_wdiget.delete(1.0, tk.END)
-        self.ascii_wdiget.insert(tk.END, self.ascii_image)
+        self.ascii_wdiget.insert(1.0, self.ascii_image, "center")
 
     def create_ascii_zone(self):
-        text1 = tk.Text(self.root, font=(
-            self.curfont.get(), self.fontsize.get()))
-        text1.pack(expand=1, fill='both', padx=10, pady=10, side=tk.BOTTOM)
-        return text1
+        textarea = tk.Text(self.root,
+                           font=(self.curfont.get(), self.fontsize.get()),
+                           relief=tk.FLAT)
+        textarea.tag_configure("center", justify='center')
+        textarea.pack(padx=10, pady=10, side=tk.TOP)
+        return textarea
 
     def update_ascii(self):
         if self.curimg is None:
@@ -128,7 +138,14 @@ class AsciifyGUI():
 
     def update_current_working_img(self):
         try:
-            self.curimg = resize(self.curfile, settings)
+            self.curimg = grey(self.curfile, settings)
+            self.aspectRatioFit = calculateAspectRatioFit(
+                self.curimg.shape[0],
+                self.curimg.shape[1])
+            settings.output["aspectratiofit"] = self.aspectRatioFit
+            settings.output["ratio"] = (self.curimg.shape[0] /
+                                        self.curimg.shape[1])
+            self.curimg = resize(self.curimg, settings)
             self.outputSize.set(
                 f'{self.curimg.shape[0]}x{self.curimg.shape[1]}')
         except AttributeError:

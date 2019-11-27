@@ -22,10 +22,15 @@ adjustments = {
 
 output = {
     "options": [("scale", 1), ("targetres", 2)],
-    "type": "scale",
-    "width": 80,
-    "height": 60,
-    "percent": 0.2
+    "type": "targetres",
+    "width": 125,
+    "height": 50,
+    "percent": 0.2,
+    "ratio": 2.5,
+    "aspectratiofit": (2, 5),
+    "ascpectlock": True,
+    "originalwidth": 200,
+    "originalheight": 150
 }
 
 gradient = {
