@@ -1,4 +1,4 @@
 autopep8==1.4.4
 numpy==1.16.3
-opencv-python==4.2.0.32
+opencv-python==4.8.1.78
 pycodestyle==2.5.0
